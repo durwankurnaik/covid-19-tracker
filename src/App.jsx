@@ -6,14 +6,21 @@ import {
   Select,
 } from "@material-ui/core";
 import { useEffect, useState } from "react";
-import "./App.css";
+import "./styles/App.css";
 import InfoBoxes from "./components/InfoBoxes";
+import LineGraph from "./components/LineGraph";
 import Map from "./components/Map";
+import Table from "./components/Table";
+import { sortData } from "./util";
+import 'leaflet/dist/leaflet.css';
 
 function App() {
   const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState("worldwide");
   const [countryInfo, setCountryInfo] = useState({});
+  const [tableData, setTableData] = useState([]);
+  const [mapCenter, setMapCenter] = useState({ lat: 22.700014, lng: 77.611393 });
+  const [mapZoom, setMapZoom] = useState(4);
 
   useEffect(() => {
     fetch("https://disease.sh/v3/covid-19/all")
@@ -34,6 +41,8 @@ function App() {
             value: country.countryInfo.iso2, // IN, NP, BT
           }));
 
+          const sortedData = sortData(data);
+          setTableData(sortedData);
           setCountries(countries); // Updating our countries array
         });
     };
@@ -55,7 +64,6 @@ function App() {
         setCountryInfo(data);
       });
   };
-  console.log(countryInfo);
 
   return (
     <div className="app">
@@ -99,14 +107,16 @@ function App() {
         </div>
 
         <div>
-          <Map />
+          <Map center={mapCenter} zoom={mapZoom} />
         </div>
       </div>
 
       <Card className="app__right">
         <CardContent>
           <h3>Live cases by countries</h3>
-          <h3>Graph details</h3>
+          <Table countries={tableData} />
+          <h3>Worldwide new cases</h3>
+          <LineGraph />
         </CardContent>
       </Card>
     </div>
