@@ -147,7 +147,7 @@ function App() {
           </div>
 
           <div>
-            <h3>Worldwide new {casesType}</h3>
+            <h3 style={{marginBottom: "1rem"}}>Worldwide new {casesType}</h3>
             <LineGraph casesType={casesType} />
           </div>
         </CardContent>

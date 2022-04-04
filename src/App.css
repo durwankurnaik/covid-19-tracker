@@ -11,17 +11,23 @@ body {
 .app {
   display: flex;
   justify-content: space-evenly;
-  padding: 20px;
+  gap: 2rem;
+  padding: 2rem 4rem;
 }
 
 .app__left {
-  flex: 0.85;
+  flex: 8;
+}
+
+.app__right {
+  flex: 2;
+  display: flex;
 }
 
 .app__right__content {
   display: flex;
-  justify-content: space-between;
   flex-direction: column;
+  justify-content: space-between;
 }
 
 @media (max-width: 990px) {
