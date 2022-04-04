@@ -4,16 +4,16 @@ import { Circle, Popup } from "react-leaflet";
 
 const casesTypeColors = {
   cases: {
-    hex: "#CC1034",
     multiplier: 80,
+    option: { color: "#cc1034", fillColor: "#cc1034" },
   },
   recovered: {
-    hex: "#7dd71d",
     multiplier: 120,
+    option: { color: "#7dd71d", fillColor: "#7dd71d" },
   },
   deaths: {
-    hex: "#fb4443",
     multiplier: 200,
+    option: { color: "#ff6c47", fillColor: "#ff6c47" },
   },
 };
 
@@ -24,15 +24,14 @@ export const sortData = (data) => {
 };
 
 // Draw circles on the map with interactive tooltip
-export const showDataOnMap = (data, caseType = "cases") =>
+export const showDataOnMap = (data, casesType) =>
   data.map((country) => (
     <Circle
       center={[country.countryInfo.lat, country.countryInfo.long]}
       fillOpacity={0.4}
-      color={casesTypeColors[caseType].hex}
-      fillColor={casesTypeColors[caseType].hex}
+      pathOptions={casesTypeColors[casesType].option}
       radius={
-        Math.sqrt(country[caseType]) * casesTypeColors[caseType].multiplier
+        Math.sqrt(country[casesType]) * casesTypeColors[casesType].multiplier
       }
     >
       <Popup>

@@ -6,8 +6,10 @@ import "chartjs-adapter-moment";
 ChartJS.register(...registerables);
 
 const options = {
-  legend: {
-    display: false,
+  plugins: {
+    legend: {
+      display: false,
+    },
   },
   elements: {
     point: {
@@ -62,7 +64,7 @@ const buildChartData = (data, casesType) => {
   return chartData;
 };
 
-function LineGraph({ casesType = "cases" }) {
+function LineGraph({ casesType }) {
   const [data, setData] = useState({});
 
   useEffect(() => {
@@ -76,13 +78,12 @@ function LineGraph({ casesType = "cases" }) {
           setData(chartData);
         });
     };
-
     fetchData();
   }, [casesType]);
 
   return (
     <div>
-      {data?.length > 0 && (
+      {data?.length > 0 ? (
         <Line
           options={options}
           data={{
@@ -95,6 +96,8 @@ function LineGraph({ casesType = "cases" }) {
             ],
           }}
         />
+      ) : (
+        <h2 style={{marginTop: "1rem"}}>No data found</h2>
       )}
     </div>
   );

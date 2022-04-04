@@ -6,7 +6,7 @@ import {
   Select,
 } from "@material-ui/core";
 import { useEffect, useState } from "react";
-import "./styles/App.css";
+import "./App.css";
 import InfoBoxes from "./components/InfoBoxes";
 import LineGraph from "./components/LineGraph";
 import Map from "./components/Map";
@@ -25,6 +25,7 @@ function App() {
   });
   const [mapZoom, setMapZoom] = useState(3);
   const [mapCountries, setMapCountries] = useState([]);
+  const [casesType, setCasesType] = useState("cases");
 
   useEffect(() => {
     fetch("https://disease.sh/v3/covid-19/all")
@@ -64,7 +65,10 @@ function App() {
         ? "https://disease.sh/v3/covid-19/all"
         : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
 
-    countryCode === "worldwide" && setMapCenter([22.937787, 77.613415]);
+    if (countryCode === "worldwide") {
+      setMapCenter([22.937787, 77.613415]);
+      setMapZoom(3);
+    }
 
     await fetch(url)
       .then((response) => response.json())
@@ -75,7 +79,6 @@ function App() {
         setMapZoom(4);
       });
   };
-  console.log(mapCenter);
 
   return (
     <div className="app">
@@ -83,7 +86,7 @@ function App() {
         {/* Header */}
         <div className="app__header">
           <h1>COVID-19 TRACKER</h1>
-          <FormControl className="app_dropdown">
+          <FormControl className="app__dropdown">
             <Select
               variant="outlined"
               value={country}
@@ -102,16 +105,24 @@ function App() {
         {/* Info Boxes */}
         <div className="app__stats">
           <InfoBoxes
+            active={casesType === "cases"}
+            onClick={() => setCasesType("cases")}
+            isRed
             title={"Cases"}
             cases={countryInfo.todayCases}
             total={countryInfo.cases}
           />
           <InfoBoxes
+            active={casesType === "recovered"}
+            onClick={() => setCasesType("recovered")}
             title={"Recovered"}
             cases={countryInfo.todayRecovered}
             total={countryInfo.recovered}
           />
           <InfoBoxes
+            active={casesType === "deaths"}
+            onClick={() => setCasesType("deaths")}
+            isRed
             title={"Deaths"}
             cases={countryInfo.todayDeaths}
             total={countryInfo.deaths}
@@ -119,16 +130,26 @@ function App() {
         </div>
 
         <div>
-          <Map countries={mapCountries} center={mapCenter} zoom={mapZoom} />
+          <Map
+            casesType={casesType}
+            countries={mapCountries}
+            center={mapCenter}
+            zoom={mapZoom}
+          />
         </div>
       </div>
 
       <Card className="app__right">
-        <CardContent>
-          <h3>Live cases by countries</h3>
-          <Table countries={tableData} />
-          <h3>Worldwide new cases</h3>
-          <LineGraph />
+        <CardContent className="app__right__content">
+          <div>
+            <h3>Live cases by countries</h3>
+            <Table countries={tableData} />
+          </div>
+
+          <div>
+            <h3>Worldwide new {casesType}</h3>
+            <LineGraph casesType={casesType} />
+          </div>
         </CardContent>
       </Card>
     </div>
